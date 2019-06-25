@@ -1,0 +1,51 @@
+#This file is an example of an environment file for defining the isolated
+#networks and related parameters.
+resource_registry:
+  # Network Interface templates to use (these files must exist). You can
+  # override these by including one of the net-*.yaml environment files,
+  # such as net-bond-with-vlans.yaml, or modifying the list here.
+  # Port assignments for the Controller
+  OS::TripleO::Controller::Net::SoftwareConfig:
+    /home/stack/andre-fix/config-nic/controller.yaml
+  # Port assignments for the Compute
+  OS::TripleO::Compute::Net::SoftwareConfig:
+    /home/stack/andre-fix/config-nic/compute.yaml
+
+parameter_defaults:
+  # This section is where deployment-specific configuration is done
+  # CIDR subnet mask length for provisioning network
+  ControlPlaneSubnetCidr: '24'
+  # Gateway router for the provisioning network (or Undercloud IP)
+  ControlPlaneDefaultRoute: 192.168.2.4
+  EC2MetadataIp: 192.168.2.4  # Generally the IP of the Undercloud
+  # Customize the IP subnets to match the local environment
+  StorageNetCidr: '192.168.102.0/24'
+  StorageMgmtNetCidr: '192.168.103.0/24'
+  InternalApiNetCidr: '192.168.100.0/24'
+  TenantNetCidr: '192.168.101.0/24'
+  ExternalNetCidr: '192.168.1.0/24'
+  # Customize the VLAN IDs to match the local environment
+  StorageNetworkVlanID: 1004
+  StorageMgmtNetworkVlanID: 1005
+  InternalApiNetworkVlanID: 1002
+  TenantNetworkVlanID: 1003
+  ExternalNetworkVlanID: 1000
+  StorageAllocationPools: [{'start': '192.168.102.40', 'end': '192.168.102.250'}]
+  StorageMgmtAllocationPools: [{'start': '192.168.103.40', 'end': '192.168.103.250'}]
+  InternalApiAllocationPools: [{'start': '192.168.100.40', 'end': '192.168.100.250'}]
+  TenantAllocationPools: [{'start': '192.168.101.40', 'end': '192.168.101.250'}]
+  # Leave room if the external network is also used for floating IPs
+  ExternalAllocationPools: [{'start': '192.168.1.21', 'end': '192.168.1.29'}]
+  # Gateway routers for routable networks
+  ExternalInterfaceDefaultRoute: '192.168.1.254'
+  # Define the DNS servers (maximum 2) for the overcloud nodes
+  DnsServers: ["8.8.8.8","8.8.4.4"]
+  # List of Neutron network types for tenant networks (will be used in order)
+  NeutronNetworkType: 'vxlan,vlan'
+  # The tunnel type for the tenant network (vxlan or gre). Set to '' to disable tunneling.
+  NeutronTunnelTypes: 'vxlan'
+  # Neutron VLAN ranges per network, for example 'datacentre:1:499,tenant:500:1000':
+  NeutronNetworkVLANRanges: 'datacentre:1:1000'
+  # Customize bonding options, e.g. "mode=4 lacp_rate=1 updelay=1000 miimon=100"
+  # for Linux bonds w/LACP, or "bond_mode=active-backup" for OVS active/backup.
+  BondInterfaceOvsOptions: "bond_mode=active-backup"

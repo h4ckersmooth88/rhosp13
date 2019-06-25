@@ -1,0 +1,7 @@
+parameter_defaults:
+  ControllerCount: 3
+  OvercloudControllerFlavor: control
+  ComputeCount: 1
+  OvercloudComputeFlavor: compute
+  #Other Params
+  NtpServer: time.google.com
